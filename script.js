@@ -112,11 +112,24 @@ const navBtns = {
 };
 
 // Setup Navigation
-navBtns.home.addEventListener('click', () => switchView('home'));
-navBtns.browse.addEventListener('click', () => switchView('browse'));
-navBtns.creator.addEventListener('click', () => switchView('creator'));
-navBtns.upload.addEventListener('click', () => { switchView('home'); document.getElementById('image-input').click(); });
-navBtns.active.addEventListener('click', () => switchView('palette'));
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navLinksContainer = document.getElementById('nav-links');
+
+if (hamburgerBtn && navLinksContainer) {
+    hamburgerBtn.addEventListener('click', () => {
+        navLinksContainer.classList.toggle('open');
+    });
+}
+
+function closeMobileMenu() {
+    if (navLinksContainer) navLinksContainer.classList.remove('open');
+}
+
+navBtns.home.addEventListener('click', () => { switchView('home'); closeMobileMenu(); });
+navBtns.browse.addEventListener('click', () => { switchView('browse'); closeMobileMenu(); });
+navBtns.creator.addEventListener('click', () => { switchView('creator'); closeMobileMenu(); });
+navBtns.upload.addEventListener('click', () => { switchView('home'); document.getElementById('image-input').click(); closeMobileMenu(); });
+navBtns.active.addEventListener('click', () => { switchView('palette'); closeMobileMenu(); });
 document.getElementById('hero-browse-btn').addEventListener('click', () => switchView('browse'));
 document.getElementById('hero-custom-btn').addEventListener('click', () => switchView('creator'));
 document.getElementById('view-all-featured').addEventListener('click', () => switchView('browse'));

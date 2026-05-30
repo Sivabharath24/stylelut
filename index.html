@@ -32,7 +32,12 @@
     <nav class="top-nav">
         <div class="nav-container">
             <button class="nav-logo" id="nav-home">StyleLUT</button>
-            <div class="nav-links">
+            <button class="hamburger-menu" id="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
                 <button class="nav-link" id="nav-browse-btn">Vibe Library</button>
                 <button class="nav-link" id="nav-creator-btn">Custom Palette</button>
                 <button class="nav-link" id="nav-upload-btn">Upload Frame</button>
@@ -58,11 +63,11 @@
             <div class="demo-frames-section" style="margin-bottom: 32px;">
                 <p style="text-align: center; color: var(--accent-yellow); margin-bottom: 16px; font-family: var(--font-heading); text-transform: uppercase;">Or try these demo frames:</p>
                 <div class="demo-frames-grid" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <img src="./frames/frame1.jpg" alt="Demo Frame 1" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame1.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
-                    <img src="./frames/frame2.jpg" alt="Demo Frame 2" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame2.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
-                    <img src="./frames/frame3.jpg" alt="Demo Frame 3" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame3.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
-                    <img src="./frames/frame4.png" alt="Demo Frame 4" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame4.png')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
-                    <img src="./frames/frame5.jpg" alt="Demo Frame 5" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame5.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <img src="./frames/frame1.jpg" alt="Demo Frame 1" class="demo-frame" onclick="loadDemoFrame('./frames/frame1.jpg')">
+                    <img src="./frames/frame2.jpg" alt="Demo Frame 2" class="demo-frame" onclick="loadDemoFrame('./frames/frame2.jpg')">
+                    <img src="./frames/frame3.jpg" alt="Demo Frame 3" class="demo-frame" onclick="loadDemoFrame('./frames/frame3.jpg')">
+                    <img src="./frames/frame4.png" alt="Demo Frame 4" class="demo-frame" onclick="loadDemoFrame('./frames/frame4.png')">
+                    <img src="./frames/frame5.jpg" alt="Demo Frame 5" class="demo-frame" onclick="loadDemoFrame('./frames/frame5.jpg')">
                 </div>
             </div>
             
