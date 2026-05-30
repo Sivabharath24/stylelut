@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleLUT - Vibe Engineering Engine</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+</head>
+<body>
+    <div class="film-grain"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p class="loading-text">DECODING VIBE...</p>
+    </div>
+
+    <!-- Camera Overlay -->
+    <div id="camera-overlay" class="hidden">
+        <div class="camera-ui">
+            <video id="camera-stream" autoplay playsinline></video>
+            <div class="camera-controls">
+                <button class="btn" id="capture-btn">SNAP VIBE</button>
+                <button class="nav-link" id="close-camera-btn">Cancel</button>
+            </div>
+            <canvas id="camera-canvas" class="hidden"></canvas>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <button class="nav-logo" id="nav-home">StyleLUT</button>
+            <div class="nav-links">
+                <button class="nav-link" id="nav-browse-btn">Vibe Library</button>
+                <button class="nav-link" id="nav-creator-btn">Custom Palette</button>
+                <button class="nav-link" id="nav-upload-btn">Upload Frame</button>
+                <button class="nav-link hidden" id="nav-active-btn">Active Vibe</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- View: Home -->
+    <main class="view-container" id="view-home">
+        <div class="hero-section">
+            <p class="hero-subtitle">Vibe Engineering</p>
+            <h1 class="hero-title">Every palette tells<br><em>a story.</em></h1>
+            <p class="hero-desc">Turn the feeling of a film frame into something wearable and designable. Dress like the emotional temperature of your favorite scenes.</p>
+            
+            <div class="drop-zone" id="drop-zone">
+                <input type="file" id="image-input" accept="image/*" hidden>
+                <div class="drop-icon">[+]</div>
+                <p class="drop-text">Drop a movie still, or click to upload</p>
+                <p class="drop-subtext">PNG, JPG, WEBP</p>
+            </div>
+            
+            <div class="demo-frames-section" style="margin-bottom: 32px;">
+                <p style="text-align: center; color: var(--accent-yellow); margin-bottom: 16px; font-family: var(--font-heading); text-transform: uppercase;">Or try these demo frames:</p>
+                <div class="demo-frames-grid" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <img src="./frames/frame1.jpg" alt="Demo Frame 1" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame1.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <img src="./frames/frame2.jpg" alt="Demo Frame 2" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame2.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <img src="./frames/frame3.jpg" alt="Demo Frame 3" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame3.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <img src="./frames/frame4.png" alt="Demo Frame 4" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame4.png')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <img src="./frames/frame5.jpg" alt="Demo Frame 5" class="demo-frame" style="width: 140px; height: 90px; object-fit: cover; cursor: pointer; border: 2px solid var(--border-color); transition: all 0.3s;" onclick="loadDemoFrame('./frames/frame5.jpg')" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                </div>
+            </div>
+            
+            <p class="hero-or">OR</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                <button class="btn" id="hero-camera-btn">Use Live Camera</button>
+                <button class="btn" id="hero-custom-btn" style="background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary);">Create Custom Palette</button>
+                <button class="btn" id="hero-browse-btn" style="background: transparent; color: var(--color-text); border: 2px solid var(--color-text);">Browse Cinematic Vibes</button>
+            </div>
+        </div>
+
+        <div class="featured-section">
+            <div class="section-header">
+                <h2>Curated Vibes</h2>
+                <button class="nav-link" id="view-all-featured">View all →</button>
+            </div>
+            <div class="palette-grid" id="featured-palettes">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- View: Browse -->
+    <main class="view-container hidden" id="view-browse">
+        <div class="browse-header">
+            <h1 class="page-title">Vibe Library</h1>
+            <p class="page-subtitle" id="library-count">Loading aesthetics...</p>
+        </div>
+        <div class="category-filters" id="category-filters">
+            <!-- Populated by JS -->
+        </div>
+        <div class="palette-grid" id="browse-palettes">
+            <!-- Populated by JS -->
+        </div>
+    </main>
+
+    <!-- View: Palette Detail -->
+    <main class="view-container hidden" id="view-palette">
+        <div class="palette-detail-layout">
+            <!-- Left Info -->
+            <div class="palette-info">
+                <img id="upload-preview" class="hidden" src="" alt="Uploaded">
+                <p class="palette-category" id="detail-category">category</p>
+                <h1 class="palette-title" id="detail-name">Name</h1>
+                <p class="palette-desc" id="detail-desc">Description</p>
+                <p class="palette-mood" id="detail-mood">Mood</p>
+                <div class="tags-container" id="detail-tags"></div>
+            </div>
+            <!-- Right Colors -->
+            <div class="palette-colors-section">
+                <div class="color-strip" id="detail-strip"></div>
+                <div class="color-cards-grid" id="detail-cards"></div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-target="tab-outfit">Outfit Translator</button>
+            <button class="tab-btn" data-target="tab-gallery">Pinterest Moodboard</button>
+            <button class="tab-btn" data-target="tab-design">Design & Photo LUTs</button>
+            <button class="tab-btn" data-target="tab-export">CSS Tokens</button>
+        </div>
+
+        <!-- Tab Content: Outfit -->
+        <div class="tab-content active" id="tab-outfit">
+            <div class="outfit-controls">
+                <div>
+                    <p class="control-label">AESTHETIC STYLE</p>
+                    <div class="btn-group" id="outfit-style-group"></div>
+                </div>
+                <div>
+                    <p class="control-label">CONTEXT / BUDGET</p>
+                    <div class="btn-group" id="outfit-intensity-group">
+                        <button class="intensity-btn" data-intensity="student">Student Budget</button>
+                        <button class="intensity-btn active" data-intensity="smart">Smart Casual</button>
+                        <button class="intensity-btn" data-intensity="luxury">Luxury Premium</button>
+                        <button class="intensity-btn" data-intensity="vintage">Vintage Archive</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="outfit-pieces-grid" id="outfit-pieces">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div class="textures-box">
+                <p class="control-label">TACTILE VIBE & FABRICS</p>
+                <p class="piece-value" id="texture-suggestions">Loading textures...</p>
+            </div>
+            
+            <div class="how-to-wear">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <p class="control-label">HOW TO WEAR THIS PALETTE</p>
+                        <div class="wear-grid" id="wear-grid"></div>
+                    </div>
+                    <button class="btn pinterest-btn" id="outfit-pinterest-btn">GENERATE PINTEREST BOARD</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Gallery -->
+        <div class="tab-content" id="tab-gallery">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 28px; flex-wrap:wrap; gap:10px;">
+                <p class="gallery-desc" style="margin-bottom:0;">Aesthetic moodboard based on your extracted vibe — imagined frames and feelings.</p>
+                <button class="btn pinterest-btn" id="gallery-pinterest-btn">SEARCH THIS VIBE ON PINTEREST</button>
+            </div>
+            <div class="masonry-grid" id="masonry-gallery">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Tab Content: Design & LUTs -->
+        <div class="tab-content" id="tab-design">
+            <div class="design-layout">
+                <div>
+                    <p class="control-label">PHOTO EDITING / LUT SUGGESTIONS</p>
+                    <div class="design-card" style="border-left-color: #c8a951;">
+                        <p class="design-cat">RETRO CAMERA STYLES</p>
+                        <p class="design-dir" id="lut-desc">Loading photography aesthetics...</p>
+                        <p class="design-typo" id="lut-camera">Camera Match: ...</p>
+                        <p class="design-mood" id="lut-lighting">Lighting: ...</p>
+                    </div>
+                    
+                    <p class="control-label" style="margin-top:24px;">DESIGN APPLICATIONS</p>
+                    <div id="design-cards"></div>
+                </div>
+                <div>
+                    <p class="control-label">LIVE THEME PREVIEW</p>
+                    <div class="theme-preview" id="theme-preview">
+                        <!-- Preview content -->
+                        <div class="tp-header">
+                            <div class="tp-avatar"></div>
+                            <div>
+                                <div class="tp-line1"></div>
+                                <div class="tp-line2"></div>
+                            </div>
+                        </div>
+                        <div class="tp-bar1"></div>
+                        <div class="tp-bar2"></div>
+                        <div class="tp-bar3"></div>
+                        <div class="tp-boxes">
+                            <div class="tp-box1"><div class="tp-inner-bar"></div></div>
+                            <div class="tp-box2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="pantone-refs-box">
+                        <p class="control-label">PANTONE-INSPIRED REFERENCES</p>
+                        <div id="pantone-refs-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Export -->
+        <div class="tab-content" id="tab-export">
+            <div class="btn-group" style="margin-bottom: 24px;">
+                <button class="btn export-type-btn active" data-type="css">CSS Variables</button>
+                <button class="btn export-type-btn" data-type="json">JSON Tokens</button>
+                <button class="btn export-type-btn" data-type="tailwind">Tailwind Config</button>
+            </div>
+            <pre class="export-code" id="export-code-block"></pre>
+            <div style="margin-top: 16px; display: flex; gap: 10px;">
+                <button class="btn" id="copy-export-btn">Copy to Clipboard</button>
+                <button class="btn" id="download-export-btn">Download File</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>StyleLUT • Cinematic Color Engine</p>
+    </footer>
+
+    <!-- View: Custom Creator -->
+    <main class="view-container hidden" id="view-creator">
+        <div class="browse-header">
+            <h1 class="page-title">Custom Palette Creator</h1>
+            <p class="page-subtitle">Build your own vibe with the color cycle engine.</p>
+        </div>
+        
+        <div class="creator-container" style="display: flex; flex-direction: column; gap: 30px; max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="color-cycle-display" id="creator-swatches" style="display: flex; height: 120px; border: 2px solid var(--border-color);">
+                <div class="creator-swatch" style="flex: 1; background: #FF0000; cursor: pointer; position: relative;">
+                    <input type="color" value="#FF0000" style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+                <div class="creator-swatch" style="flex: 1; background: #FF8C00; cursor: pointer; position: relative;">
+                    <input type="color" value="#FF8C00" style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+                <div class="creator-swatch" style="flex: 1; background: #FFD700; cursor: pointer; position: relative;">
+                    <input type="color" value="#FFD700" style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+                <div class="creator-swatch" style="flex: 1; background: #111111; cursor: pointer; position: relative;">
+                    <input type="color" value="#111111" style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+                <div class="creator-swatch" style="flex: 1; background: #FFFFFF; cursor: pointer; position: relative;">
+                    <input type="color" value="#FFFFFF" style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+            </div>
+            
+            <p style="font-family: var(--font-body); color: var(--text-color);">Click a block to pick a color, or hit cycle to spin the hue wheel.</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn" id="creator-cycle-btn">Cycle Colors 🎲</button>
+                <button class="btn" id="creator-save-btn" style="background: var(--accent-yellow); color: #000; border-color: var(--accent-yellow);">Analyze This Palette</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="palettes.js"></script>
+    <script src="demo_frames.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
