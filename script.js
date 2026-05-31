@@ -86,6 +86,30 @@ const CATEGORY_LABELS = {
 
 // ALL_PALETTES loaded from palettes.js
 
+// Global Image Extension Fallback
+window.tryNextExtension = function(imgEl, baseName) {
+    if (!baseName) {
+        imgEl.classList.add('hidden');
+        return;
+    }
+    const currentSrc = imgEl.src.toLowerCase();
+    if (currentSrc.endsWith('.jpg')) {
+        imgEl.src = `./frames/${baseName}.jpeg`;
+    } else if (currentSrc.endsWith('.jpeg')) {
+        imgEl.src = `./frames/${baseName}.png`;
+    } else {
+        // All extensions failed, hide it
+        imgEl.classList.add('hidden');
+        if (imgEl.id === 'director-meme') {
+            const container = document.getElementById('director-meme-container');
+            if (container) container.classList.add('hidden');
+        } else if (imgEl.id === 'american-psycho-img') {
+            const container = document.getElementById('psycho-meme-container');
+            if (container) container.classList.add('hidden');
+        }
+    }
+};
+
 // --- State ---
 let viewState = "home"; 
 let activePalette = null; 
@@ -564,6 +588,39 @@ function renderPaletteDetail() {
     const imgEl = document.getElementById('upload-preview');
     if (p.uploadSrc) { imgEl.src = p.uploadSrc; imgEl.classList.remove('hidden'); }
     else { imgEl.classList.add('hidden'); imgEl.src = ''; }
+
+    const directorMemeEl = document.getElementById('director-meme');
+    const directorMemeContainer = document.getElementById('director-meme-container');
+    const directorMemeCaption = document.getElementById('director-meme-caption');
+    if (p.category === 'cinematic') {
+        directorMemeEl.classList.remove('hidden');
+        directorMemeEl.dataset.basename = p.id;
+        directorMemeEl.src = `./frames/${p.id}.jpg`;
+        const directorName = p.name.split('/')[0].trim();
+        directorMemeEl.title = `Directed by ${directorName}`;
+        
+        let quote = directorName;
+        switch(p.id) {
+            case 'wes-anderson': quote = "Asteroid City"; break;
+            case 'wong-kar-wai': quote = "Love is a matter of timing."; break;
+            case 'pedro-almodovar': quote = "Women on the verge..."; break;
+            case 'david-fincher': quote = "What's in the box?"; break;
+            case 'damien-chazelle': quote = "Not quite my tempo."; break;
+            case 'denis-villeneuve': quote = "Fear is the mind-killer."; break;
+            case 'guillermo-del-toro': quote = "Monsters are real."; break;
+            case 'dario-argento': quote = "Suspiria..."; break;
+            case 'akira-kurosawa': quote = "The rain won't stop."; break;
+            case 'quentin-tarantino': quote = "Kill Bill Vol. 1"; break;
+            case 'christopher-nolan': quote = "A dream within a dream."; break;
+            case 'the-matrix': quote = "Red pill or blue pill?"; break;
+        }
+        
+        if (directorMemeCaption) directorMemeCaption.innerText = quote;
+        directorMemeContainer.classList.add('hidden');
+    } else {
+        directorMemeContainer.classList.add('hidden');
+        directorMemeEl.src = "";
+    }
     
     document.getElementById('detail-strip').innerHTML = p.colors.map(c => `<div style="flex:1; background:${c}"></div>`).join('');
     document.getElementById('detail-cards').innerHTML = p.colors.map(c => `
@@ -685,7 +742,7 @@ function updateOutfitPieces() {
     }
 }
 
-function openPinterestSearch() {
+function openPinterestSearch(e) {
     const p = activePalette;
     
     // Select 3 visually distinct colors
@@ -707,8 +764,26 @@ function openPinterestSearch() {
     else if (outfitIntensity === 'student') context = "thrifted casual";
     else context = "smart casual";
 
+    // Get gender based on which button was clicked
+    let gender = "";
+    if (e && e.target) {
+        if (e.target.id === 'outfit-pinterest-btn') {
+            const selectEl = document.getElementById('pinterest-gender-outfit');
+            if (selectEl) gender = selectEl.value;
+        } else if (e.target.id === 'gallery-pinterest-btn') {
+            const selectEl = document.getElementById('pinterest-gender-gallery');
+            if (selectEl) gender = selectEl.value;
+        }
+    }
+
     // Build a highly specific structured query for Pinterest
-    const query = encodeURIComponent(`${style} ${context} aesthetic ${topColorName} top ${botColorName} pants`);
+    const queryParts = [];
+    if (gender === 'mens') queryParts.push("mens");
+    else if (gender === 'womens') queryParts.push("womens");
+    
+    queryParts.push(style, context, "aesthetic", topColorName, "top", botColorName, "pants");
+
+    const query = encodeURIComponent(queryParts.join(" "));
     window.open(`https://www.pinterest.com/search/pins/?q=${query}`, '_blank');
 }
 

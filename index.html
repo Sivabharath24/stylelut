@@ -93,9 +93,12 @@
 
     <!-- View: Browse -->
     <main class="view-container hidden" id="view-browse">
-        <div class="browse-header">
-            <h1 class="page-title">Vibe Library</h1>
-            <p class="page-subtitle" id="library-count">Loading aesthetics...</p>
+        <div class="browse-header" style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <div>
+                <h1 class="page-title">Vibe Library</h1>
+                <p class="page-subtitle" id="library-count">Loading aesthetics...</p>
+            </div>
+            <img src="./frames/gatsby.jpg" alt="Gatsby Meme" class="hidden" style="height: 120px; border: 2px solid var(--border-color); box-shadow: 4px 4px 0px rgba(0,0,0,0.8); flex-shrink: 0;" title="To impeccable vibes, old sport." onload="this.classList.remove('hidden')" onerror="window.tryNextExtension(this, 'gatsby')">
         </div>
         <div class="category-filters" id="category-filters">
             <!-- Populated by JS -->
@@ -111,8 +114,16 @@
             <!-- Left Info -->
             <div class="palette-info">
                 <img id="upload-preview" class="hidden" src="" alt="Uploaded">
-                <p class="palette-category" id="detail-category">category</p>
-                <h1 class="palette-title" id="detail-name">Name</h1>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 12px;">
+                    <div>
+                        <p class="palette-category" id="detail-category" style="margin-bottom: 4px;">category</p>
+                        <h1 class="palette-title" id="detail-name" style="margin-bottom: 0;">Name</h1>
+                    </div>
+                    <div id="director-meme-container" class="hidden" style="background: #fdfdfd; padding: 12px 12px 40px 12px; border: 2px solid var(--border-color); box-shadow: 6px 6px 0px rgba(0,0,0,0.8); flex-shrink: 0; position: relative; top: -10px;">
+                        <img id="director-meme" src="" alt="Director Meme" style="width: 160px; height: 90px; object-fit: cover; border: 1px solid #ccc;" onload="document.getElementById('director-meme-container').classList.remove('hidden')" onerror="window.tryNextExtension(this, this.dataset.basename)">
+                        <span style="position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; color: #111; font-family: var(--font-heading); font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;" id="director-meme-caption"></span>
+                    </div>
+                </div>
                 <p class="palette-desc" id="detail-desc">Description</p>
                 <p class="palette-mood" id="detail-mood">Mood</p>
                 <div class="tags-container" id="detail-tags"></div>
@@ -165,7 +176,17 @@
                         <p class="control-label">HOW TO WEAR THIS PALETTE</p>
                         <div class="wear-grid" id="wear-grid"></div>
                     </div>
-                    <button class="btn pinterest-btn" id="outfit-pinterest-btn">GENERATE PINTEREST BOARD</button>
+                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 20px;">
+                        <img src="./frames/zoolander.jpg" alt="Zoolander meme" class="hidden" style="height: 100px; border: 2px solid var(--border-color); box-shadow: 4px 4px 0px rgba(0,0,0,0.8); cursor: help;" title="It's so beautiful..." onload="this.classList.remove('hidden')" onerror="window.tryNextExtension(this, 'zoolander')">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <select id="pinterest-gender-outfit" class="btn" style="background: #111; color: var(--text-color); border: 2px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+                                <option value="mens">Menswear</option>
+                                <option value="womens">Womenswear</option>
+                                <option value="">Unisex / Neutral</option>
+                            </select>
+                            <button class="btn pinterest-btn" id="outfit-pinterest-btn">GENERATE PINTEREST BOARD</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -174,7 +195,14 @@
         <div class="tab-content" id="tab-gallery">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 28px; flex-wrap:wrap; gap:10px;">
                 <p class="gallery-desc" style="margin-bottom:0;">Aesthetic moodboard based on your extracted vibe — imagined frames and feelings.</p>
-                <button class="btn pinterest-btn" id="gallery-pinterest-btn">SEARCH THIS VIBE ON PINTEREST</button>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <select id="pinterest-gender-gallery" class="btn" style="background: #111; color: var(--text-color); border: 2px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+                        <option value="mens">Menswear</option>
+                        <option value="womens">Womenswear</option>
+                        <option value="">Unisex / Neutral</option>
+                    </select>
+                    <button class="btn pinterest-btn" id="gallery-pinterest-btn">SEARCH THIS VIBE ON PINTEREST</button>
+                </div>
             </div>
             <div class="masonry-grid" id="masonry-gallery">
                 <!-- Populated by JS -->
@@ -226,15 +254,23 @@
 
         <!-- Tab Content: Export -->
         <div class="tab-content" id="tab-export">
-            <div class="btn-group" style="margin-bottom: 24px;">
-                <button class="btn export-type-btn active" data-type="css">CSS Variables</button>
-                <button class="btn export-type-btn" data-type="json">JSON Tokens</button>
-                <button class="btn export-type-btn" data-type="tailwind">Tailwind Config</button>
-            </div>
-            <pre class="export-code" id="export-code-block"></pre>
-            <div style="margin-top: 16px; display: flex; gap: 10px;">
-                <button class="btn" id="copy-export-btn">Copy to Clipboard</button>
-                <button class="btn" id="download-export-btn">Download File</button>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
+                <div style="flex: 1; min-width: 300px;">
+                    <div class="btn-group" style="margin-bottom: 24px;">
+                        <button class="btn export-type-btn active" data-type="css">CSS Variables</button>
+                        <button class="btn export-type-btn" data-type="json">JSON Tokens</button>
+                        <button class="btn export-type-btn" data-type="tailwind">Tailwind Config</button>
+                    </div>
+                    <pre class="export-code" id="export-code-block"></pre>
+                    <div style="margin-top: 16px; display: flex; gap: 10px;">
+                        <button class="btn" id="copy-export-btn">Copy to Clipboard</button>
+                        <button class="btn" id="download-export-btn">Download File</button>
+                    </div>
+                </div>
+                <div class="hidden" id="psycho-meme-container" style="background: #111; padding: 16px; border: 2px solid var(--border-color); box-shadow: 6px 6px 0px rgba(0,0,0,0.8); max-width: 300px; flex-shrink: 0;">
+                    <img src="./frames/american-psycho.jpg" id="american-psycho-img" alt="American Psycho meme" style="width: 100%; border: 2px solid var(--border-color);" title="Look at that subtle off-white coloring..." onload="document.getElementById('psycho-meme-container').classList.remove('hidden')" onerror="window.tryNextExtension(this, 'american-psycho')">
+                    <p style="color: var(--accent-yellow); font-family: var(--font-heading); text-transform: uppercase; text-align: center; margin-top: 12px; font-size: 14px;">"Look at that subtle off-white coloring..."</p>
+                </div>
             </div>
         </div>
     </main>
